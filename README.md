@@ -1,6 +1,6 @@
 # 🎉 Welcome to my GitHub Portfolio! 🎉
 
-In this portfolio, you'll find the following projects listed in alphabetical order:
+In this portfolio, you'll find the following projects listed in alphabetical order:\
 
 **🌙 Predicting sleep efficiency using linear regression 🌙**
 
