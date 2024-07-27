@@ -2,8 +2,8 @@
 
 In this portfolio, you'll find the following projects listed in alphabetical order:
 
-##
-##
+###
+###
 
 **Predicting sleep efficiency using linear regression 🌙**
 
@@ -15,8 +15,8 @@ In this portfolio, you'll find the following projects listed in alphabetical ord
 
   - The PDF file contains the output of the code
 
-##
-##
+###
+###
 
 **Predicting life expectancy using PCA and LASSO regression 🩺**
 
@@ -28,8 +28,8 @@ In this portfolio, you'll find the following projects listed in alphabetical ord
 
   - The PDF file contains the output of the code
 
-##
-##
+###
+###
 
 **Email sentiment analysis project 📧**
 
@@ -43,8 +43,8 @@ In this portfolio, you'll find the following projects listed in alphabetical ord
 
   - Our team's poster presentation is also included
 
-##
-##
+###
+###
 
 **Pneumonia diagnosis using chest x-ray images 🩻**
 
@@ -58,8 +58,8 @@ In this portfolio, you'll find the following projects listed in alphabetical ord
 
   - The Presentation PDF file explores the research, analysis, and findings of the project
 
-##
-##
+###
+###
 
 **TDEC water quality data analysis 💧**
 
