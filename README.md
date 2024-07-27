@@ -1,6 +1,6 @@
 # Welcome to my GitHub Portfolio!
 
-**📧     Email sentiment analysis project 📧**
+**📧  Email sentiment analysis project  📧**
 
 - In this project, I built a BERT-powered Python flask app designed for individuals with cognitive disabilities
 
@@ -14,7 +14,7 @@
 
 #
 
-**🩻 Pneumonia diagnosis using chest x-ray images 🩻**
+**🩻  Pneumonia diagnosis using chest x-ray images  🩻**
 
 - In this project, I performed SVD and fine-tuned 4 classification models to identify cases of pneumonia
 
@@ -28,7 +28,7 @@
 
 #
 
-**🩺 Predicting life expectancy using PCA and LASSO regression 🩺**
+**🩺  Predicting life expectancy using PCA and LASSO regression  🩺**
 
 - In this project, I performed PCA and built a LASSO linear regression model to predict life expectancy
 
@@ -40,7 +40,7 @@
 
 #
 
-**🌙 Predicting sleep efficiency using linear regression 🌙**
+**🌙  Predicting sleep efficiency using linear regression  🌙**
 
 - In this project, I built a linear regression model to predict sleep efficiency
 
@@ -52,7 +52,7 @@
 
 #
 
-**💧 TDEC water quality data analysis 💧**
+**💧  TDEC water quality data analysis  💧**
 
 - In this project, I identified temporal, spatial, and seasonal water quality trends using 33 years of data across 86 monitoring sites in Tennessee
 
