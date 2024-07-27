@@ -26,6 +26,8 @@
 
   - The Presentation PDF file explores the research, analysis, and findings of the project
 
+&nbsp;
+
 ### 🩺  Predicting life expectancy using PCA and LASSO regression  🩺
 
 - In this project, I performed PCA and built a LASSO regression model to predict life expectancy
@@ -36,6 +38,8 @@
 
   - The PDF file contains the output of the code
 
+&nbsp;
+
 ### 🌙  Predicting sleep efficiency using linear regression  🌙
 
 - In this project, I built a linear regression model to predict sleep efficiency
@@ -45,6 +49,8 @@
   - The **data** folder contains the sleep efficiency data set I used
 
   - The PDF file contains the output of the code
+
+&nbsp;
 
 ### 💧  TDEC water quality data analysis  💧
 
