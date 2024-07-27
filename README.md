@@ -1,14 +1,30 @@
 # 🎉 Welcome to my GitHub Portfolio! 🎉
 
-**Predicting sleep efficiency using linear regression 🌙**
+**Email sentiment analysis project 📧**
 
-- In this project, I built a linear regression model to predict sleep efficiency
+- In this project, I built a BERT-powered Python flask app designed for individuals with cognitive disabilities
 
-  - The **code** folder contains my R markdown code
+  - The **templates** folder contains the HTML code for the home and results pages of the app
+
+  - `app.py` contains the Python code for the flask app
+
+  - The **demo** folder contains a demo video and screenshots of the app
+
+  - Our team's poster presentation is also included
+
+#
+
+**Pneumonia diagnosis using chest x-ray images 🩻**
+
+- In this project, I performed SVD and fine-tuned 4 classification models to identify cases of pneumonia
+
+  - The **code** folder contains my Python code
   
-  - The **data** folder contains the sleep efficiency data set I used
+  - The **data** folder contains the training and testing sets I used
 
-  - The PDF file contains the output of the code
+  - The Pneumonia PDF file contains the output of the code
+
+  - The Presentation PDF file explores the research, analysis, and findings of the project
 
 #
 
@@ -24,17 +40,15 @@
 
 #
 
-**Email sentiment analysis project 📧**
+**Predicting sleep efficiency using linear regression 🌙**
 
-- In this project, I built a BERT-powered Python flask app designed for individuals with cognitive disabilities
+- In this project, I built a linear regression model to predict sleep efficiency
 
-  - The **templates** folder contains the HTML code for the home and results pages of the app
+  - The **code** folder contains my R markdown code
+  
+  - The **data** folder contains the sleep efficiency data set I used
 
-  - `app.py` contains the Python code for the flask app
-
-  - The **demo** folder contains a demo video and screenshots of the app
-
-  - Our team's poster presentation is also included
+  - The PDF file contains the output of the code
 
 #
 
