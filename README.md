@@ -30,7 +30,7 @@
 
 **🩺  Predicting life expectancy using PCA and LASSO regression  🩺**
 
-- In this project, I performed PCA and built a LASSO linear regression model to predict life expectancy
+- In this project, I performed PCA and built a LASSO regression model to predict life expectancy
 
   - The **code** folder contains my R markdown code
   
