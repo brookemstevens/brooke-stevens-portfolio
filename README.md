@@ -56,7 +56,7 @@
 
 - In this project, I identified temporal, spatial, and seasonal water quality trends using 33 years of data across 86 monitoring sites in Tennessee
 
-  - The **code and data** folder contains a code sample of my analysis and the data set I used
+  - The **code and data** folder contains a sample of my Python code and the data set I used
   
   - The SFkFkDeer PDF file contains the output of the code
   
