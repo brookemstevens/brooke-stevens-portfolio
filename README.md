@@ -2,7 +2,7 @@
 
 **💻  Email sentiment analysis tool  💻**
 
-- In this project, I built a BERT-powered Python flask app designed for individuals with cognitive disabilities
+- In this project, I built a BERT-powered flask app designed for individuals with cognitive disabilities
 
   - The **templates** folder contains the HTML code for the home and results pages of the app
 
