@@ -1,0 +1,369 @@
+---
+title: "Predicting sleep efficiency using linear regression"
+author: "Brooke Stevens"
+date: "2023-02-24"
+output: pdf_document
+---
+
+```{r}
+# Load libraries
+library(tidyverse)
+library(ggplot2)
+library(GGally)
+library(car)
+```
+
+# Data
+
+```{r}
+# Sleep efficiency dataset
+sleep <- read.csv("../data/Sleep_Efficiency.csv")
+
+# Variables in dataset
+colnames(sleep)
+```
+
+The `Sleep_Efficiency.csv` dataset was obtained through Kaggle. Each row represents a person in this study, and the 15 columns contain statistics related to that person's observed sleep session, including bedtime, wakeup time, sleep duration, and more.
+
+# Research Question
+
+Using this data, I want to predict **sleep efficiency** using linear regression. The steps for wrangling the data are as follows:
+
+1. Remove all missingness from the dataset
+
+2. Obtain the columns relevant to the analysis
+
+# Variables of Interest
+
+**Dependent variable:**
+
+- `Sleep.efficiency`, the proportion of time in bed spent sleeping
+
+**Independent variables:**
+
+- `REM.sleep.percentage`, the percentage of sleep spent in REM
+
+- `Deep.sleep.percentage`, the percentage of sleep spent in deep sleep
+
+- `Light.sleep.percentage`, the percentage of sleep spent in light sleep
+
+- `Awakenings`, the number of times woken up
+
+# Null and Alternative Hypotheses
+
+**Null Hypothesis:** Sleep efficiency is **not** related to these variables
+
+**Alternative Hypothesis:** Sleep efficiency **is** related to these variables
+
+**Formal Model:**
+$$
+Sleep\,Efficiency = \beta_0 + \beta_1*REM\,Pct + \beta_2*Deep\,Sleep\,Pct + \beta_3*Light\,Sleep\,Pct + \beta_4*Awakenings + \varepsilon
+$$
+
+**Formal Hypotheses:**
+$$
+H_0\,(null): \beta_1 = \beta_2 = \beta_3 = \beta_4 = 0
+$$
+$$
+H_A\,(alternative): Any\,\beta_i \neq 0
+$$
+
+# Data Wrangling
+
+First, I want to remove all missingness from this dataset.
+
+```{r}
+# Remove missingness in dataset
+sleep <- sleep %>%
+  drop_na()
+```
+
+Next, I want to modify the dataset to only include the columns relevant for the analysis.
+
+```{r}
+# Only including relevant data columns
+sleep <- sleep %>%
+  select(c("Sleep.efficiency",
+           "REM.sleep.percentage",
+           "Deep.sleep.percentage",
+           "Light.sleep.percentage",
+           "Awakenings"))
+```
+
+This data is now fully wrangled!
+
+# Analysis
+
+The steps I will perform to create the linear regression are as follows:
+
+1. Check normality and correlations of all variables of interest
+
+2. Transform variables (if necessary)
+
+3. Perform regression and look at model summary
+
+4. Check for multicollinearity (using VIF > 5)
+
+5. Remove non-significant predictors
+
+6. Check normality of residuals (homoskedasticity) and correlation between residuals and predicted values
+
+7. Repeat steps 3-6 as necessary
+
+We will begin with step 1, which involves checking the normality and correlations of all variables of interest.
+
+```{r, message=F}
+# Checking normality and correlations using ggpairs
+ggpairs(sleep)
+```
+
+Generally, these variables are not normally distributed. Some have right skew while others have left skew. The variables `Light.sleep.percentage` and `Deep.sleep.percentage` appear to have the highest correlation to the dependent variable `Sleep.efficiency`. There is a high correlation between the independent variables `Light.sleep.percentage` and `Deep.sleep.percentage`, and this may be cause for concern later. Many correlations are also statistically significant.
+
+This calls for step 2, which involves transforming (normalizing) the variables. 
+
+```{r, message=F}
+# Load bestNormalize library and set seed
+library(bestNormalize)
+set.seed(1234)
+
+# Applying normalization
+sleep_normal <- apply(sleep, 2, function(x){
+  bestNormalize(x)$x.t
+  }
+)
+
+# Convert to dataframe for ggpairs
+sleep_normal <- as.data.frame(sleep_normal)
+
+# Obtain transforms, to be used during backtransformation
+sleep_transforms <- lapply(1:ncol(sleep), function(i){
+    bestNormalize(
+      sleep[,i]
+      ) # obtain all output from function
+  })
+
+# Check out distributions again
+ggpairs(sleep_normal)
+```
+
+All of our variables except for `Awakenings` are now normally distributed. The skew is gone. The correlation values between `Sleep.efficiency` and the independent variables have gone down. `Light.sleep.percentage` and `Deep.sleep.percentage` still have the highest correlation to the dependent variable `Sleep.efficiency`. All of these values are statistically significant except for the relationship between `Awakenings` and `Deep.sleep.percentage`.
+
+We will now begin step 3, which involves performing the regression and analyzing the model summary.
+
+```{r, message=F}
+# Creating linear model
+lm_sleep = lm(Sleep.efficiency ~ ., sleep_normal)
+summary(lm_sleep)
+```
+
+All of our variables appear to be statistically significant under $\alpha = 0.05$, so none of these variables should be removed from the regression as of now.
+
+Each coefficient value represents the increase or decrease in `Sleep.efficiency` if the corresponding independent variable increases by one standard deviation. For example, when `REM.sleep.percentage` increases by one standard deviation, `Sleep.efficiency` increases by 0.23848.
+
+The $R^2$ value is equal to **0.5749**. This means that 57.49% of the variance in `Sleep.efficiency` can be explained by the independent variables in the model.
+
+We can now proceed to step 4, which involves checking these variables for multicollinearity. If we find multicollinearity, we may have to remove variables present in the model.
+
+```{r}
+# Computing VIF values
+vif(lm_sleep)
+```
+
+**Whoa!** The `Deep.sleep.percentage` and `Light.sleep.percentage` variables exceed our VIF threshold of 5.
+
+Because the correlation between `Sleep.efficiency` and `Light.sleep.percentage` is highest, I am going to remove `Deep.sleep.percentage` from the model and see if we obtain better VIF values.
+
+```{r, message=F}
+# Creating linear model without Deep.sleep.percentage
+lm_sleep_refined = lm(Sleep.efficiency ~ ., sleep_normal[-3])
+summary(lm_sleep_refined)
+```
+
+Again, all of our variables appear to be statistically significant under $\alpha = 0.05$. In fact, they are all significant under the 0 code.
+
+The new $R^2$ value is equal to **0.5687**. This means that 56.87% of the variance in `Sleep.efficiency` can be explained by the independent variables in the model. This is slightly worse than our $R^2$ value last time.
+
+We will now compute the new VIF values of this model.
+
+```{r}
+# Computing VIF values
+vif(lm_sleep_refined)
+```
+
+This looks good! All our VIF values are now under 5.
+
+We may skip step 5, removing non-significant predictors, because all of our predictors are significant.
+
+Finally, we can proceed to step 6, which involves checking the normality of residuals (homoskedasticity) and correlation between residuals and predicted values.
+
+We can check the normality of the residuals in 3 ways:
+
+1. Plotting a histogram of the residuals
+
+2. Shapiro-Wilk test
+
+3. QQ plot
+
+First, we can visually check normality by plotting the residuals on a histogram:
+
+```{r}
+# Histogram of residuals
+hist(residuals(lm_sleep_refined))
+```
+
+At first glance, these residuals appear to be normally distributed. But let's investigate further.
+
+To check normality using the Shapiro-Wilk test:
+
+- **Null Hypothesis:** Residuals **are** normally distributed $(p > 0.05)$
+
+- **Alternative Hypothesis:** Residuals are **not** normally distributed $(p < 0.05)$
+
+```{r}
+# Shapiro-Wilk test
+shapiro.test(residuals(lm_sleep_refined))
+```
+
+The p-value is just barely under 0.05, indicating that the residuals might not be normally distributed!
+
+Let's now assess the linearity of the QQ plot:
+
+```{r}
+# Plot fitted values on residuals
+plot(lm_sleep_refined, which = 2)
+```
+
+The ends of the QQ plot do not lie on the line, indicating there is a collection of residuals that are not normally distributed.
+
+Let's attempt to fix the normality of our residuals by removing outliers in this dataset. Similar to the lab, I will consider residuals of magnitude greater than 2 to be outliers. I will add a column to the sleep dataset called `outliers` which will be used to filter outliers (which correspond to a value of 1).
+
+```{r}
+# Adding a variable called outliers to sleep dataset
+sleep_normal <- sleep_normal %>%
+  mutate(outliers = ifelse(
+    residuals(lm_sleep_refined) <= -2 | residuals(lm_sleep_refined) >= 2, 1, 0))
+
+# Removing outliers
+sleep_normal <- sleep_normal %>%
+  filter(outliers == 0) %>%
+  select(!outliers)
+
+# Creating linear model without outliers
+lm_sleep_outliers <- lm(Sleep.efficiency ~ ., sleep_normal[-3])
+summary(lm_sleep_outliers)
+```
+
+Our $R^2$ value seems to have improved slightly. It is now equal to **0.5941**.
+
+We will now compute the new VIF values of this model.
+
+```{r}
+# Computing VIF values
+vif(lm_sleep_outliers)
+```
+
+Looks good!
+
+Again, we do not need to remove insignificant predictors because there are none.
+
+Let's again run through the 3 steps of determining normality of the residuals.
+
+```{r}
+# Histogram of residuals
+hist(residuals(lm_sleep_outliers))
+```
+
+These appear to be normally distributed at first glance.
+
+```{r}
+# Shapiro-Wilk test
+shapiro.test(residuals(lm_sleep_outliers))
+```
+
+This p-value is now greater than 0.05, so we can accept the Null Hypothesis that these residuals **are** normally distributed!
+
+```{r}
+# Plot fitted values on residuals
+plot(lm_sleep_outliers, which = 2)
+```
+
+This QQ plot appears slightly more linear than the last. However, it is still not perfect.
+
+**We will proceed with `lm_sleep_outliers` as our final version of the model.** The residuals are normally distributed based on this analysis!
+
+We can see where we are underpredicting and overpredicting by plotting the residuals and the fitted values:
+
+```{r}
+# Plotting residuals and fitted values
+plot(lm_sleep_outliers, which = 1)
+```
+
+We seem to be underpredicting for lower fitted values and overpredicting for higher fitted values. Otherwise, these residuals are hovering around 0.
+
+To conclude our analysis, we can compute the **RMSE** (root mean squared error) of this linear model.
+
+```{r}
+# Compute RMSE
+sqrt(mean(residuals(lm_sleep_outliers)^2))
+```
+
+The RMSE of this model is equal to **0.6119604**. This means that on average, our predicted values are about 0.6119604 standard deviations away from the actual values.
+
+# Data Visualization
+
+To conclude, I will plot:
+
+- The predicted values on the actual values
+
+- The backtransformed predicted distances on the actual distances
+
+```{r}
+# Plotting predicted values on actual values
+final_df <- data.frame(
+  actual = sleep_normal$Sleep.efficiency,
+  predicted = predict(lm_sleep_outliers)
+)
+
+ggplot(data = final_df, aes(x = actual, y = predicted)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+```{r}
+# Perform backtransformation on predicted values
+predicted_values <- predict(
+  sleep_transforms[[1]],
+  # corresponding {bestNormalize} output
+  newdata = predict(lm_sleep_outliers),
+  # get predictions from model
+  inverse = TRUE
+  # backtransform
+)
+
+# Obtain actual values
+actual_values <- sleep_normal$Sleep.efficiency
+
+# Plot data frame
+plot_df <- data.frame(
+  predicted = predicted_values,
+  actual = actual_values
+)
+
+ggplot(data = plot_df, aes(x = actual, y = predicted)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+# Discussion
+
+The purpose of this analysis was to determine if **sleep efficiency** could be predicted using numeric variables within the `Sleep_Efficiency.csv` dataset. Specifically, these independent variables were REM sleep percentage, deep sleep percentage (removed), light sleep percentage, and the number of awakenings. Our **Formal Null Hypothesis** specified that the coefficients in our linear regression model were all equal to 0, while our **Formal Alternative Hypothesis** specified that at least one of these coefficients was not equal to 0. Through the analysis performed above, the coefficients were determined to be non-zero:
+
+$$
+Sleep\,Efficiency = 0.009684 + 0.195042*REM\,Pct - 0.464606*Light\,Sleep\,Pct - 0.539362*Awakenings + \varepsilon
+$$
+
+Therefore, we may accept the **Alternative Hypothesis** that **sleep efficiency is related to these independent variables.**
+
+The final model `lm_sleep_outliers` was obtained by normalizing the variables, removing insignificant variables, removing instances of multicollinearity, and removing outliers. This model had an **$R^2$ value** of **0.5941**, meaning that 59.41% of the variance in `Sleep.efficiency` can be explained by the independent variables in the model. This is a pretty good $R^2$ value, so this relationship certainly deserves our attention. Our residuals were also determined to be normally distributed, which is favorable for our model. Finally, the **RMSE** of this model was equal to **0.6119604**, meaning that on average, our predicted values were about 0.6119604 standard deviations away from the actual values.
+
+In summary, this model is a good one, and it should be ready to deploy in a real world setting.
