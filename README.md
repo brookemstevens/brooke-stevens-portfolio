@@ -2,7 +2,9 @@
 
 In this portfolio, you'll find the following projects listed in alphabetical order:
 
-- **Predicting sleep efficiency using linear regression**: In this project, I built a linear regression model to predict sleep efficiency
+**🌙 Predicting sleep efficiency using linear regression 🌙**
+
+- In this project, I built a linear regression model to predict sleep efficiency
 
   - The **code** folder contains my R markdown code
   
