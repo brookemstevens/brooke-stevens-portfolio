@@ -12,6 +12,8 @@
 
   - Our team's poster presentation is also included
 
+&nbsp;
+
 ### 🩻  Pneumonia diagnosis using chest x-ray images  🩻
 
 - In this project, I performed SVD and fine-tuned 4 classification models to identify pneumonia in x-ray scans
