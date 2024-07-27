@@ -1,6 +1,6 @@
 # Welcome to my GitHub Portfolio!
 
-**📧  Email sentiment analysis project  📧**
+**💻  Email sentiment analysis project  💻**
 
 - In this project, I built a BERT-powered Python flask app designed for individuals with cognitive disabilities
 
