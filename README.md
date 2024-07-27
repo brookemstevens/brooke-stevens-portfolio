@@ -28,7 +28,7 @@ In this portfolio, you'll find the following projects listed in alphabetical ord
 
   - Our team's poster presentation is also included
   
-- **Pneumonia diagnosis using chest x-ray images**: In this project, I performed SVD and tested/fine-tuned 4 classification models to diagnose pneumonia in the lungs
+- **Pneumonia diagnosis using chest x-ray images**: In this project, I performed SVD and fine-tuned 4 classification models to identify cases of pneumonia
 
   - The **code** folder contains my Python code
   
@@ -38,8 +38,10 @@ In this portfolio, you'll find the following projects listed in alphabetical ord
 
   - The Presentation PDF file explores the research, analysis, and findings of the project
 
-- **TDEC water quality data analysis**: In this project, I identified temporal, spatial, and seasonal trends using 33 years of data across 86 monitoring sites in Tennessee
+- **TDEC water quality data analysis**: In this project, I identified temporal, spatial, and seasonal water quality trends using 33 years of data across 86 monitoring sites in Tennessee
 
-  - The **sample** folder contains a code sample of my data analysis, along with the PDF output of the code
+  - The **code and data** folder contains a code sample of my analysis and the data set I used
+  
+  - The SFkFkDeer PDF file contains the output of the code
   
   - Our team's poster presentation is also included
