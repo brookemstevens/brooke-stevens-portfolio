@@ -2,7 +2,7 @@
 
 ### 💻  Email sentiment analysis tool  💻
 
-- In this project, I built a BERT-powered flask app designed for individuals with cognitive disabilities
+- In this project, I built a BERT-powered sentiment analysis tool designed for individuals with cognitive disabilities
 
   - The **templates** folder contains the HTML code for the home and results pages of the app
 
@@ -16,7 +16,7 @@
 
 ### 🩻  Pneumonia diagnosis using chest x-ray images  🩻
 
-- In this project, I performed SVD and fine-tuned 4 classification models to identify pneumonia in x-ray scans
+- In this project, I performed SVD and fine-tuned 4 classification models t o identify pneumonia in x-ray scans
 
   - The **code** folder contains my Python code
   
