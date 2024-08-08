@@ -16,7 +16,7 @@
 
 ### 🩻  Pneumonia diagnosis using chest x-ray images  🩻
 
-- In this project, I performed SVD and fine-tuned 4 classification models t o identify pneumonia in x-ray scans
+- In this project, I performed SVD and fine-tuned 4 classification models to identify pneumonia in x-ray scans
 
   - The **code** folder contains my Python code
   
