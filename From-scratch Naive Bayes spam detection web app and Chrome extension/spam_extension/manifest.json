@@ -1,0 +1,13 @@
+{
+    "manifest_version": 3,
+    "name": "Spam Detector",
+    "description": "A Chrome extension that uses a Flask-hosted ML model to detect whether a typed or pasted email is spam.",
+    "version": "1.0",
+
+    "permissions": [],
+    
+    "host_permissions": ["http://localhost:2026/*", "http://127.0.0.1:2026/*"],
+    "action": {
+        "default_popup": "popup.html"
+    }
+}

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Basic document metadata and compatibility settings -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Title shown in the browser tab -->
+    <title>Spam Detector</title>
+
+    <!-- Google Font import for consistent UI text -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Internal CSS controlling layout and visual design -->
+    <style>
+        /* Resetting box model and default spacing */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Limiting the popup width */
+        html, body {
+            width: 500px;
+        }
+
+        /* Main page styling: centered layout with soft background */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 1rem;
+        }
+
+        /* Primary container card holding all content */
+        .container {
+            background-color: #fff;
+            width: 100%;
+            max-width: none;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        /* Main heading */
+        h1 {
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #1a1a1a;
+        }
+
+        /* Text area for user input */
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 0.75rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            resize: vertical;
+        }
+
+        /* Analyze button styling */
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        /* Hover effect for button */
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Result area where prediction is displayed */
+        #result {
+            font-weight: 700;
+            margin-top: 1.5rem;
+            font-size: 1.25rem;
+        }
+
+        /* Styling applied when prediction is spam */
+        #result.spam {
+            color: #e74c3c;
+        }
+
+        /* Styling applied when prediction is not spam */
+        #result.not-spam {
+            color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+    <!-- Central UI card -->
+    <div class="container">
+        <!-- Page title -->
+        <h1>Spam Detector</h1>
+
+        <!-- Text input for message to analyze -->
+        <textarea id="input" placeholder="Type your message here..."></textarea>
+
+        <!-- Button that triggers JS classifier -->
+        <button id="check">Analyze</button>
+
+        <!-- Empty div that will later display prediction results -->
+        <div id="result"></div>
+    </div>
+
+    <!-- External JavaScript file handling logic for detecting spam -->
+    <script src="popup.js"></script>
+</body>
+</html>
