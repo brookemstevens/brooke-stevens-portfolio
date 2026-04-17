@@ -27,6 +27,20 @@
 
 &nbsp;
 
+### 🚫  From-scratch Naive Bayes spam detection web app and Chrome extension  🚫
+
+- In this project, I built a spam detection system using a Naive Bayes model implemented from scratch using only Python's math libraries (no ML libraries) deployed as both a Flask web app and a Chrome browser extension
+
+  - The **spam_app** folder contains the Flask web application
+
+  - The **spam_extension** folder contains the Chrome extension and its Flask backend
+
+  - `requirements.txt` lists all Python dependencies needed to run either component
+
+  - - The **README.md** includes setup and installation instructions for both the web app and Chrome extension
+
+&nbsp;
+
 ### 🩻  Pneumonia diagnosis using chest x-ray images  🩻
 
 - In this project, I performed SVD and fine-tuned 4 classification models to identify pneumonia in x-ray scans
