@@ -1,7 +1,7 @@
 # Welcome to my GitHub Portfolio!
 
-### 🔢  Claude skills for mathematical visualization  🔢
-🏆  Won 1st prize and $1,000 at Vanderbilt AI Showcase Competition 2026  🏆
+### 🔢  Claude skills for mathematical visualization  🔢
+🏆  Won 1st prize and $1,000 at Vanderbilt AI Showcase Competition 2026  🏆
 
 - In this project, I built two Claude skills that help students understand formal mathematical algorithms through pseudocode extraction and step-by-step numerical examples
 
