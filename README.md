@@ -37,7 +37,7 @@
 
   - `requirements.txt` lists all Python dependencies needed to run either component
 
-  - - The **README.md** includes setup and installation instructions for both the web app and Chrome extension
+  - The **README.md** includes setup and installation instructions for both the web app and Chrome extension
 
 &nbsp;
 
