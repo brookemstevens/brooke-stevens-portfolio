@@ -1,5 +1,18 @@
 # Welcome to my GitHub Portfolio!
 
+### 🔢  Claude skills for mathematical visualization  🔢
+### 🏆  Won 1st prize and $1,000 at Vanderbilt AI Showcase Competition 2026  🏆
+
+- In this project, I built two Claude skills that help students understand formal mathematical algorithms through pseudocode extraction and step-by-step numerical examples
+
+  - The **algorithm-math-visualizer.skill** file contains the skill for tracing any algorithm using small, concrete example values rendered in LaTeX, optimized for *Formal Algorithms for Transformers* (Phuong & Hutter, 2022)
+
+  - The **pseudocode-extractor.skill** file contains the skill for converting research papers into clean, formal pseudocode in the style of Phuong & Hutter (2022)
+
+  - The **README.md** documents the motivation, skill overviews, usage instructions, and demos — including chained skill examples applied to LoRA, RoFormer, and class notes from numerical mathematics
+
+&nbsp;
+
 ### 💻  Email sentiment analysis tool  💻
 
 - In this project, I built a BERT-powered sentiment analysis tool designed for individuals with cognitive disabilities
