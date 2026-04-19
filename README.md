@@ -9,7 +9,7 @@
 
   - The **pseudocode-extractor.skill** file contains the skill for converting research papers into clean, formal pseudocode in the style of Phuong & Hutter (2022)
 
-  - The **README.md** documents the motivation, skill overviews, usage instructions, and demos — including chained skill examples applied to LoRA, RoFormer, and class notes from numerical mathematics
+  - The **README.md** documents the motivation, skill overviews, usage instructions, and demos
 
 &nbsp;
 
