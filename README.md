@@ -13,6 +13,18 @@
 
 &nbsp;
 
+### 🍽️  Brooke's Meal Planner AWS Agent  🍽️
+
+- In this project, I built an agentic LLM-based web app powered by AWS that helps a single person plan weeknight dinners, reduce food waste, and generate grocery lists with real package sizes and store-specific prices
+
+  - The **lambda** folder contains the Python backend, including the Bedrock Converse agent loop, tool definitions, DynamoDB data layer, and API clients for Spoonacular recipes and the Kroger Public API
+
+  - `index.html` contains the static frontend chat UI, including a structured shopping-list renderer
+
+  - The **README.md** documents the architecture, setup steps, environment variables, and instructions for adding cookbook recipes
+
+&nbsp;
+
 ### 💻  Email sentiment analysis tool  💻
 
 - In this project, I built a BERT-powered sentiment analysis tool designed for individuals with cognitive disabilities
