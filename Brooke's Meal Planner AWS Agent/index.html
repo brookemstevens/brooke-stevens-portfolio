@@ -1,0 +1,1237 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light" />
+  <title>Brooke's Meal Planner</title>
+  <meta name="description" content="A personal weekly dinner planner." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" />
+
+  <style>
+    :root {
+      --cream: #f6f0e4;
+      --cream-deep: #ece2cf;
+      --paper: #fbf6ec;
+      --ink: #231d17;
+      --ink-soft: #5b4f42;
+      --ink-faint: #9a8d7c;
+      --tomato: #c03a22;
+      --tomato-deep: #8f2714;
+      --olive: #5d6b3a;
+      --mustard: #c98a1b;
+      --line: #d9cdb6;
+      --line-soft: #e6dcc6;
+      --shadow: 0 1px 0 rgba(35, 29, 23, 0.04), 0 8px 24px -12px rgba(35, 29, 23, 0.18);
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: var(--cream);
+      color: var(--ink);
+      font-family: "DM Sans", system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* Subtle paper grain */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        radial-gradient(circle at 20% 30%, rgba(201, 138, 27, 0.04) 0, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(93, 107, 58, 0.04) 0, transparent 40%);
+      z-index: 0;
+    }
+
+    .app {
+      position: relative;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      height: 100dvh;
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 0 20px;
+      z-index: 1;
+    }
+
+    /* ---- Header ---- */
+    header.masthead {
+      padding: 28px 0 20px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+    }
+
+    .mark {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--tomato);
+      color: var(--paper);
+      display: grid;
+      place-items: center;
+      font-family: "Fraunces", serif;
+      font-weight: 600;
+      font-size: 18px;
+      font-style: italic;
+      transform: translateY(6px);
+      box-shadow: inset 0 -2px 0 rgba(0,0,0,0.12);
+    }
+
+    h1.title {
+      font-family: "Fraunces", serif;
+      font-weight: 500;
+      font-size: clamp(26px, 4.2vw, 38px);
+      margin: 0;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+    }
+
+    h1.title em {
+      font-style: italic;
+      color: var(--tomato);
+      font-weight: 500;
+    }
+
+    .tagline {
+      font-family: "Fraunces", serif;
+      font-style: italic;
+      font-size: 14px;
+      color: var(--ink-soft);
+      margin: 0;
+      text-align: right;
+      max-width: 200px;
+    }
+
+    /* ---- Messages area ---- */
+    main.chat {
+      overflow-y: auto;
+      padding: 28px 2px 20px;
+      scroll-behavior: smooth;
+    }
+
+    main.chat::-webkit-scrollbar { width: 8px; }
+    main.chat::-webkit-scrollbar-thumb {
+      background: var(--line);
+      border-radius: 4px;
+    }
+
+    .messages {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .message {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      animation: slideUp 0.35s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message .byline {
+      font-family: "Fraunces", serif;
+      font-style: italic;
+      font-size: 13px;
+      color: var(--ink-faint);
+      letter-spacing: 0.02em;
+    }
+
+    .message .body {
+      font-size: 16px;
+      line-height: 1.55;
+      word-wrap: break-word;
+    }
+
+    .message.user .byline { color: var(--tomato); }
+    .message.user .body {
+      background: var(--paper);
+      border: 1px solid var(--line-soft);
+      border-left: 3px solid var(--tomato);
+      padding: 14px 18px;
+      border-radius: 2px 12px 12px 12px;
+      white-space: pre-wrap; /* user's own typing: preserve newlines */
+    }
+
+    .message.assistant .body {
+      color: var(--ink);
+    }
+
+    .message .body strong { font-weight: 600; color: var(--ink); }
+    .message .body em { font-style: italic; color: var(--ink-soft); }
+    .message .body p { margin: 0.35em 0; }
+    .message .body p:first-child { margin-top: 0; }
+    .message .body p:last-child { margin-bottom: 0; }
+    .message .body ul, .message .body ol {
+      padding-left: 1.4em;
+      margin: 0.25em 0;
+    }
+    .message .body li { margin-bottom: 0.1em; line-height: 1.5; }
+    .message .body li:last-child { margin-bottom: 0; }
+    .message .body h1, .message .body h2, .message .body h3 {
+      font-family: "Fraunces", serif;
+      font-weight: 500;
+      margin: 0.6em 0 0.1em;
+      line-height: 1.2;
+    }
+    /* Collapse the margin stack when a heading immediately follows a
+       list, paragraph, or hr — otherwise both sides contribute and the gap
+       doubles up. */
+    .message .body ul + h1, .message .body ul + h2, .message .body ul + h3,
+    .message .body ol + h1, .message .body ol + h2, .message .body ol + h3,
+    .message .body p + h1,  .message .body p + h2,  .message .body p + h3,
+    .message .body hr + h1, .message .body hr + h2, .message .body hr + h3 {
+      margin-top: 0.35em;
+    }
+    .message .body h1:first-child,
+    .message .body h2:first-child,
+    .message .body h3:first-child { margin-top: 0; }
+    .message .body h3 { font-size: 1.05em; }
+    .message .body hr {
+      border: 0;
+      border-top: 1px solid var(--line-soft);
+      margin: 0.6em 0;
+      opacity: 0.7;
+    }
+    .message .body code {
+      background: var(--cream-deep);
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-family: ui-monospace, "SF Mono", monospace;
+      font-size: 0.9em;
+    }
+    .message .body a {
+      color: var(--tomato);
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 2px;
+    }
+
+    /* ---- Shopping list component (structured tool output) ----
+       Rendered from a base64 JSON payload emitted by the format_shopping_list
+       tool. Visual language matches the rest of the chat: cream paper,
+       Fraunces italic serif for labels, warm tomato accent for emphasis. */
+    .shopping-list {
+      margin: 0.6em 0 0.8em;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .shopping-list__store {
+      padding: 10px 16px;
+      background: var(--cream-deep);
+      font-family: "Fraunces", serif;
+      font-style: italic;
+      font-size: 13px;
+      color: var(--ink-soft);
+      letter-spacing: 0.02em;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .shopping-list__note {
+      padding: 10px 16px;
+      font-size: 13px;
+      color: var(--ink-soft);
+      background: rgba(201, 138, 27, 0.06); /* subtle mustard tint */
+      border-bottom: 1px solid var(--line-soft);
+      font-style: italic;
+    }
+
+    .shopping-list__section {
+      padding: 6px 0 2px;
+    }
+
+    .shopping-list__section:not(:last-of-type) {
+      border-bottom: 1px solid var(--line-soft);
+    }
+
+    .shopping-list__section-title {
+      font-family: "Fraunces", serif;
+      font-weight: 500;
+      font-size: 16px;
+      color: var(--ink);
+      margin: 8px 16px 4px;
+      padding: 0;
+      line-height: 1.2;
+    }
+
+    .shopping-list__table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .shopping-list__table th {
+      font-family: "Fraunces", serif;
+      font-style: italic;
+      font-weight: 500;
+      text-align: left;
+      padding: 6px 12px;
+      color: var(--ink-faint);
+      font-size: 12px;
+      text-transform: none;
+      letter-spacing: 0.02em;
+      border-bottom: 1px solid var(--line-soft);
+      white-space: nowrap;
+      background: transparent;
+    }
+
+    .shopping-list__table td {
+      padding: 8px 12px;
+      vertical-align: top;
+      color: var(--ink);
+      border-bottom: 1px solid var(--line-soft);
+    }
+
+    .shopping-list__table tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .shopping-list__cell-item {
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .shopping-list__cell-product {
+      color: var(--ink-soft);
+      line-height: 1.4;
+      max-width: 340px;
+    }
+
+    .shopping-list__cell-note {
+      margin-top: 3px;
+      font-size: 12px;
+      color: var(--tomato-deep);
+      font-style: italic;
+      line-height: 1.4;
+    }
+
+    .shopping-list__cell-qty {
+      white-space: nowrap;
+      color: var(--ink-soft);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .shopping-list__cell-price {
+      white-space: nowrap;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      color: var(--ink);
+    }
+
+    .shopping-list__totals {
+      padding: 10px 16px 12px;
+      background: var(--cream-deep);
+      border-top: 1px solid var(--line);
+    }
+
+    .shopping-list__total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 3px 0;
+      font-size: 14px;
+      color: var(--ink-soft);
+    }
+
+    .shopping-list__total-row > span:last-child {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .shopping-list__total-row--emphasis {
+      font-family: "Fraunces", serif;
+      font-weight: 500;
+      font-size: 16px;
+      color: var(--ink);
+      padding-top: 6px;
+      margin-top: 2px;
+      border-top: 1px solid var(--line);
+    }
+
+    .shopping-list__total-row--emphasis > span:last-child {
+      color: var(--tomato);
+    }
+
+    /* Narrow screens: shrink type slightly, let product text wrap more */
+    @media (max-width: 560px) {
+      .shopping-list__table { font-size: 13px; }
+      .shopping-list__table th,
+      .shopping-list__table td { padding: 6px 8px; }
+      .shopping-list__cell-product { max-width: none; }
+    }
+
+    /* ---- Shopping list component ----
+       Rendered from a base64-encoded [[SHOPPING_LIST:...]] sentinel emitted
+       by the backend's format_shopping_list tool. Built as real DOM so it
+       doesn't depend on the LLM producing valid markdown. */
+    .shopping-list {
+      margin: 0.8em 0;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .shopping-list__store {
+      font-family: "Fraunces", serif;
+      font-style: italic;
+      font-size: 13px;
+      color: var(--ink-soft);
+      padding: 10px 16px 0;
+      letter-spacing: 0.02em;
+    }
+
+    .shopping-list__note {
+      padding: 8px 16px;
+      margin: 8px 16px 0;
+      background: rgba(201, 138, 27, 0.08);
+      border-left: 3px solid var(--mustard);
+      border-radius: 3px;
+      font-size: 14px;
+      color: var(--ink-soft);
+    }
+
+    .shopping-list__section {
+      padding: 14px 16px 16px;
+      border-bottom: 1px solid var(--line-soft);
+    }
+    .shopping-list__section:last-of-type {
+      border-bottom: 0;
+    }
+
+    .shopping-list__section-title {
+      font-family: "Fraunces", serif;
+      font-weight: 500;
+      font-style: normal;
+      font-size: 16px;
+      margin: 0 0 8px;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+    }
+
+    .shopping-list__table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      table-layout: auto;
+    }
+
+    .shopping-list__table thead th {
+      font-family: "Fraunces", serif;
+      font-style: italic;
+      font-weight: 500;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-faint);
+      text-align: left;
+      padding: 4px 8px 6px;
+      border-bottom: 1px solid var(--line);
+    }
+    .shopping-list__table thead th:first-child { padding-left: 0; }
+    .shopping-list__table thead th:last-child { padding-right: 0; text-align: right; }
+
+    .shopping-list__table tbody td {
+      padding: 8px;
+      vertical-align: top;
+      border-bottom: 1px solid var(--line-soft);
+      color: var(--ink);
+    }
+    .shopping-list__table tbody tr:last-child td {
+      border-bottom: 0;
+    }
+    .shopping-list__table tbody td:first-child { padding-left: 0; }
+    .shopping-list__table tbody td:last-child { padding-right: 0; }
+
+    .shopping-list__cell-item {
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .shopping-list__cell-product {
+      color: var(--ink-soft);
+      font-size: 13.5px;
+      line-height: 1.45;
+    }
+    .shopping-list__cell-qty {
+      white-space: nowrap;
+      color: var(--ink-soft);
+      font-variant-numeric: tabular-nums;
+    }
+    .shopping-list__cell-price {
+      white-space: nowrap;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      font-weight: 500;
+    }
+    .shopping-list__cell-note {
+      margin-top: 3px;
+      font-size: 12.5px;
+      font-style: italic;
+      color: var(--mustard);
+      line-height: 1.4;
+    }
+
+    .shopping-list__totals {
+      padding: 12px 16px 14px;
+      background: var(--cream-deep);
+      border-top: 1px solid var(--line);
+    }
+
+    .shopping-list__total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 14px;
+      color: var(--ink-soft);
+      padding: 3px 0;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .shopping-list__total-row--emphasis {
+      font-family: "Fraunces", serif;
+      font-weight: 500;
+      font-size: 16px;
+      color: var(--ink);
+      margin-top: 4px;
+      padding-top: 8px;
+      border-top: 1px solid var(--line);
+    }
+
+    /* Narrow-screen: drop the product column emphasis, keep table scannable */
+    @media (max-width: 520px) {
+      .shopping-list__table { font-size: 13px; }
+      .shopping-list__cell-product { font-size: 12.5px; }
+      .shopping-list__cell-item { white-space: normal; }
+    }
+
+    /* ---- Empty state ---- */
+    .empty {
+      padding: 20px 0 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .empty .hello {
+      font-family: "Fraunces", serif;
+      font-size: clamp(28px, 4vw, 36px);
+      line-height: 1.2;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      margin: 0;
+    }
+
+    .empty .hello em {
+      font-style: italic;
+      color: var(--tomato);
+    }
+
+    .empty .intro {
+      color: var(--ink-soft);
+      max-width: 52ch;
+      font-size: 15px;
+    }
+
+    .starters {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .starter {
+      text-align: left;
+      padding: 14px 16px;
+      background: var(--paper);
+      border: 1px solid var(--line-soft);
+      border-radius: var(--radius);
+      color: var(--ink);
+      font: inherit;
+      font-size: 14px;
+      cursor: pointer;
+      transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+      line-height: 1.4;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .starter::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--olive);
+      transform: translateX(-3px);
+      transition: transform 0.2s;
+    }
+
+    .starter:hover {
+      border-color: var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .starter:hover::before { transform: translateX(0); }
+
+    .starter .label {
+      font-family: "Fraunces", serif;
+      font-style: italic;
+      font-size: 12px;
+      color: var(--tomato);
+      display: block;
+      margin-bottom: 4px;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    /* ---- Typing indicator ---- */
+    .typing {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--ink-soft);
+      font-family: "Fraunces", serif;
+      font-style: italic;
+      font-size: 15px;
+    }
+
+    .dots {
+      display: inline-flex;
+      gap: 4px;
+    }
+
+    .dots span {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--tomato);
+      animation: bounce 1.2s infinite ease-in-out both;
+    }
+    .dots span:nth-child(2) { animation-delay: 0.15s; }
+    .dots span:nth-child(3) { animation-delay: 0.3s; }
+
+    @keyframes bounce {
+      0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
+      40% { opacity: 1; transform: scale(1); }
+    }
+
+    /* ---- Composer ---- */
+    footer.composer-wrap {
+      border-top: 1px solid var(--line);
+      padding: 16px 0 22px;
+      background: linear-gradient(to bottom, transparent, var(--cream) 12px);
+    }
+
+    .composer {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 10px 10px 10px 16px;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .composer:focus-within {
+      border-color: var(--tomato);
+      box-shadow: 0 0 0 3px rgba(192, 58, 34, 0.08);
+    }
+
+    textarea#input {
+      flex: 1;
+      border: 0;
+      background: transparent;
+      resize: none;
+      font: inherit;
+      font-size: 16px;
+      color: var(--ink);
+      padding: 8px 0;
+      max-height: 180px;
+      outline: none;
+      line-height: 1.5;
+    }
+
+    textarea#input::placeholder {
+      color: var(--ink-faint);
+      font-style: italic;
+      font-family: "Fraunces", serif;
+    }
+
+    button#send {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--tomato);
+      color: var(--paper);
+      border: 0;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    button#send:hover:not(:disabled) { background: var(--tomato-deep); }
+    button#send:active:not(:disabled) { transform: scale(0.95); }
+    button#send:disabled {
+      background: var(--line);
+      cursor: not-allowed;
+    }
+
+    button#send svg { width: 18px; height: 18px; }
+
+    .hint {
+      text-align: center;
+      font-size: 12px;
+      color: var(--ink-faint);
+      margin-top: 10px;
+      font-family: "Fraunces", serif;
+      font-style: italic;
+    }
+
+    .error {
+      color: var(--tomato-deep);
+      background: #fbe8e3;
+      border-left: 3px solid var(--tomato);
+      padding: 12px 16px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    /* Mobile tweaks */
+    @media (max-width: 560px) {
+      .app { padding: 0 16px; }
+      header.masthead {
+        padding: 20px 0 14px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+      .tagline { text-align: left; max-width: none; }
+      .brand { gap: 10px; }
+      .mark { width: 30px; height: 30px; font-size: 16px; transform: translateY(4px); }
+      .starters { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+
+    <header class="masthead">
+      <div class="brand">
+        <!-- <div class="mark">B</div> -->
+        <h1 class="title">Brooke's <em>Meal Planner</em></h1>
+      </div>
+    </header>
+
+    <main class="chat" id="chat">
+      <div class="messages" id="messages">
+        <!-- populated by JS -->
+      </div>
+    </main>
+
+    <footer class="composer-wrap">
+      <div class="composer">
+        <textarea
+          id="input"
+          rows="1"
+          placeholder="Ask about anything..."
+          autocomplete="off"
+          spellcheck="true"
+        ></textarea>
+        <button id="send" aria-label="Send message" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12l14 0"/>
+            <path d="M13 6l6 6l-6 6"/>
+          </svg>
+        </button>
+      </div>
+      <div class="hint">press enter to send · shift+enter for new line</div>
+    </footer>
+
+  </div>
+
+  <script>
+    // ================== CONFIG ==================
+    // Paste your API Gateway or Lambda Function URL here.
+    // Example: "https://abc123.lambda-url.us-east-2.on.aws/"
+    const API_URL = "";
+
+    // Shared secret — must match the APP_TOKEN env var set on the Lambda.
+    // Leave empty ("") to disable the check (matches backend behavior).
+    const APP_TOKEN = "";
+
+    // =============================================
+
+    const STARTERS = [
+      { label: "plan the week", text: "Plan dinners for me Monday through Thursday this week, including a Kroger shopping list with prices for a Sunday grocery run. Leftovers are encouraged for meals that reheat well." },
+      { label: "pantry", text: "In my fridge, I currently have eggs, a lemon, and feta. Please update my pantry accordingly." },
+      { label: "tonight", text: "What should I make tonight with what I already have in my pantry?" },
+      { label: "ingredient preferences", text: "Can you add mushrooms to my list of disliked ingredients in my preferences?" },
+      { label: "recipe preferences", text: "I didn't like the baked cod recipe with ID 000000. Please add it to my disliked recipes and don't suggest it in the future." },
+      { label: "grocery list", text: "Give me a QFC shopping list for 1 lb of penne pasta, 1 can of crushed tomatoes, and 1 head of garlic." },
+    ];
+
+    // --- State ---
+    const messagesEl = document.getElementById("messages");
+    const inputEl = document.getElementById("input");
+    const sendEl = document.getElementById("send");
+    const chatEl = document.getElementById("chat");
+
+    const userId = "bstevens";
+
+    // To expand to multi-user:
+    // let userId = localStorage.getItem("mealplanner_user_id");
+    // if (!userId) {
+    //   userId = "u_" + Math.random().toString(36).slice(2, 10);
+    //   localStorage.setItem("mealplanner_user_id", userId);
+    // }
+
+    let messages = [];           // {role, content}
+    let sending = false;
+    let typingNode = null;
+
+    // --- Lightweight markdown renderer ---
+    // Handles: **bold**, *italic*, `code`, links [text](url),
+    // unordered lists (-, *), ordered lists (1.), and headings (## / ###).
+    // Everything else is preserved as plain text.
+    function escapeHtml(s) {
+      return s.replace(/[&<>"']/g, c => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      }[c]));
+    }
+
+    function renderMarkdown(raw) {
+      const lines = raw.split("\n");
+      const out = [];
+      let listType = null;        // 'ul' | 'ol' | null
+      let paraBuf = [];
+
+      const flushList = () => {
+        if (listType) { out.push(`</${listType}>`); listType = null; }
+      };
+      const flushPara = () => {
+        if (paraBuf.length) {
+          out.push(`<p>${paraBuf.join(" ")}</p>`);
+          paraBuf = [];
+        }
+      };
+
+      for (let line of lines) {
+        const headingMatch = line.match(/^(#{1,3})\s+(.*)$/);
+        const ulMatch = line.match(/^\s*[-*]\s+(.*)$/);
+        const olMatch = line.match(/^\s*\d+\.\s+(.*)$/);
+        const hrMatch = line.match(/^\s*([-*_])\1{2,}\s*$/);  // ---, ***, ___
+        const isBlank = line.trim() === "";
+
+        if (hrMatch) {
+          flushList(); flushPara();
+          out.push("<hr>");
+        } else if (headingMatch) {
+          flushList(); flushPara();
+          const level = headingMatch[1].length;
+          out.push(`<h${level}>${inline(headingMatch[2])}</h${level}>`);
+        } else if (ulMatch) {
+          flushPara();
+          if (listType !== "ul") { flushList(); out.push("<ul>"); listType = "ul"; }
+          out.push(`<li>${inline(ulMatch[1])}</li>`);
+        } else if (olMatch) {
+          flushPara();
+          if (listType !== "ol") { flushList(); out.push("<ol>"); listType = "ol"; }
+          out.push(`<li>${inline(olMatch[1])}</li>`);
+        } else if (isBlank) {
+          // Flush paragraphs, but NOT lists — blank lines between list items
+          // are allowed in markdown and should stay in the same list.
+          flushPara();
+        } else {
+          // Regular text starts a new paragraph and closes any open list.
+          flushList();
+          paraBuf.push(inline(line));
+        }
+      }
+      flushList(); flushPara();
+      return out.join("");
+    }
+
+    function inline(s) {
+      s = escapeHtml(s);
+      // Links [text](url) — url must be http(s)
+      s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
+        '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+      // Bold
+      s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+      // Italic (avoid matching ** already consumed)
+      s = s.replace(/(^|[^*])\*([^*\n]+)\*/g, "$1<em>$2</em>");
+      // Inline code
+      s = s.replace(/`([^`]+)`/g, "<code>$1</code>");
+      return s;
+    }
+
+    // --- Rendering ---
+    function renderAll() {
+      messagesEl.innerHTML = "";
+      if (messages.length === 0) {
+        renderEmptyState();
+        return;
+      }
+      for (const m of messages) renderMessage(m);
+    }
+
+    function renderEmptyState() {
+      const empty = document.createElement("div");
+      empty.className = "empty";
+      empty.innerHTML = `
+        <div>
+          <p class="hello">Welcome back. <em>What should we cook this week?</em></p>
+          <p class="intro">
+            Tell me what's in your pantry, which days you're cooking, and any
+            preferences you have. I'll suggest recipes and put together a
+            shopping list.
+          </p>
+        </div>
+        <div class="starters" id="starters"></div>
+      `;
+      messagesEl.appendChild(empty);
+
+      const startersEl = empty.querySelector("#starters");
+      for (const s of STARTERS) {
+        const btn = document.createElement("button");
+        btn.className = "starter";
+        btn.innerHTML = `<span class="label">${s.label}</span>${escapeHtml(s.text)}`;
+        btn.addEventListener("click", () => {
+          inputEl.value = s.text;
+          inputEl.focus();
+          autoResize();
+          updateSendState();
+        });
+        startersEl.appendChild(btn);
+      }
+    }
+
+    function renderMessage(m) {
+      const wrap = document.createElement("div");
+      wrap.className = "message " + m.role;
+
+      const byline = document.createElement("div");
+      byline.className = "byline";
+      byline.textContent = m.role === "user" ? "you" : "assistant";
+
+      const body = document.createElement("div");
+      body.className = "body";
+      if (m.role === "assistant") {
+        renderAssistantContent(body, m.content);
+      } else {
+        body.textContent = m.content;
+      }
+
+      wrap.appendChild(byline);
+      wrap.appendChild(body);
+      messagesEl.appendChild(wrap);
+    }
+
+    /* Pre-scan the assistant's text for [[SHOPPING_LIST:...]] sentinel
+       tokens. Everything around them is rendered as markdown; each token
+       is replaced with a real DOM shopping-list component. This is Option C
+       from the design discussion: structured tool output → frontend
+       rendering, no LLM-authored markup. */
+    const SHOPPING_LIST_RE = /\[\[SHOPPING_LIST:([A-Za-z0-9+/=]+)\]\]/g;
+
+    function renderAssistantContent(body, text) {
+      const parts = [];
+      let lastIndex = 0;
+      let m;
+      SHOPPING_LIST_RE.lastIndex = 0;
+      while ((m = SHOPPING_LIST_RE.exec(text)) !== null) {
+        if (m.index > lastIndex) {
+          parts.push({ type: "md", text: text.slice(lastIndex, m.index) });
+        }
+        parts.push({ type: "list", payload: m[1] });
+        lastIndex = m.index + m[0].length;
+      }
+      if (lastIndex < text.length) {
+        parts.push({ type: "md", text: text.slice(lastIndex) });
+      }
+      if (parts.length === 0) {
+        parts.push({ type: "md", text });
+      }
+
+      for (const part of parts) {
+        if (part.type === "md") {
+          const trimmed = part.text.trim();
+          if (!trimmed) continue;
+          const container = document.createElement("div");
+          container.innerHTML = renderMarkdown(part.text);
+          while (container.firstChild) body.appendChild(container.firstChild);
+        } else {
+          const el = renderShoppingList(part.payload);
+          if (el) body.appendChild(el);
+        }
+      }
+    }
+
+    /* Decode a base64 shopping-list payload and build a styled DOM tree.
+       Payload shape (see backend format_shopping_list tool):
+         { sections: [{title, emoji, items: [{item, product, qty, price, note}]}],
+           totals: [{label, value, emphasis}],
+           store: "QFC - Redmond, WA",
+           note: "..."
+         } */
+    function renderShoppingList(encoded) {
+      let data;
+      try {
+        const json = atob(encoded);
+        data = JSON.parse(json);
+      } catch (e) {
+        console.error("[mealplanner] failed to decode shopping list", e);
+        return null;
+      }
+      const card = document.createElement("div");
+      card.className = "shopping-list";
+
+      if (data.store) {
+        const store = document.createElement("div");
+        store.className = "shopping-list__store";
+        store.textContent = data.store;
+        card.appendChild(store);
+      }
+      if (data.note) {
+        const note = document.createElement("div");
+        note.className = "shopping-list__note";
+        note.textContent = data.note;
+        card.appendChild(note);
+      }
+
+      for (const section of (data.sections || [])) {
+        const sec = document.createElement("section");
+        sec.className = "shopping-list__section";
+
+        const h = document.createElement("h4");
+        h.className = "shopping-list__section-title";
+        h.textContent = (section.emoji ? section.emoji + " " : "") + (section.title || "");
+        sec.appendChild(h);
+
+        const tbl = document.createElement("table");
+        tbl.className = "shopping-list__table";
+
+        const thead = document.createElement("thead");
+        const headRow = document.createElement("tr");
+        for (const label of ["Item", "Product", "Qty", "Price"]) {
+          const th = document.createElement("th");
+          th.textContent = label;
+          headRow.appendChild(th);
+        }
+        thead.appendChild(headRow);
+        tbl.appendChild(thead);
+
+        const tbody = document.createElement("tbody");
+        for (const it of (section.items || [])) {
+          const tr = document.createElement("tr");
+          const tdItem = document.createElement("td");
+          tdItem.textContent = it.item || "";
+          tdItem.className = "shopping-list__cell-item";
+          tr.appendChild(tdItem);
+
+          const tdProduct = document.createElement("td");
+          tdProduct.className = "shopping-list__cell-product";
+          if (it.product) tdProduct.textContent = it.product;
+          if (it.note) {
+            const noteEl = document.createElement("div");
+            noteEl.className = "shopping-list__cell-note";
+            noteEl.textContent = "⚠ " + it.note;
+            tdProduct.appendChild(noteEl);
+          }
+          tr.appendChild(tdProduct);
+
+          const tdQty = document.createElement("td");
+          tdQty.textContent = it.qty || "";
+          tdQty.className = "shopping-list__cell-qty";
+          tr.appendChild(tdQty);
+
+          const tdPrice = document.createElement("td");
+          tdPrice.textContent = it.price || "";
+          tdPrice.className = "shopping-list__cell-price";
+          tr.appendChild(tdPrice);
+
+          tbody.appendChild(tr);
+        }
+        tbl.appendChild(tbody);
+        sec.appendChild(tbl);
+        card.appendChild(sec);
+      }
+
+      if (data.totals && data.totals.length) {
+        const totals = document.createElement("div");
+        totals.className = "shopping-list__totals";
+        for (const t of data.totals) {
+          const row = document.createElement("div");
+          row.className = "shopping-list__total-row" + (t.emphasis ? " shopping-list__total-row--emphasis" : "");
+          const label = document.createElement("span");
+          label.textContent = t.label;
+          const value = document.createElement("span");
+          value.textContent = t.value;
+          row.appendChild(label);
+          row.appendChild(value);
+          totals.appendChild(row);
+        }
+        card.appendChild(totals);
+      }
+
+      return card;
+    }
+
+    function showTyping() {
+      typingNode = document.createElement("div");
+      typingNode.className = "message assistant";
+      typingNode.innerHTML = `
+        <div class="byline">assistant</div>
+        <div class="body">
+          <span class="typing">
+            <span>thinking</span>
+            <span class="dots"><span></span><span></span><span></span></span>
+          </span>
+        </div>
+      `;
+      messagesEl.appendChild(typingNode);
+      scrollToBottom();
+    }
+
+    function hideTyping() {
+      if (typingNode) { typingNode.remove(); typingNode = null; }
+    }
+
+    function showError(text) {
+      const wrap = document.createElement("div");
+      wrap.className = "message assistant";
+      wrap.innerHTML = `<div class="byline">error</div><div class="error"></div>`;
+      wrap.querySelector(".error").textContent = text;
+      messagesEl.appendChild(wrap);
+      scrollToBottom();
+    }
+
+    function scrollToBottom() {
+      requestAnimationFrame(() => {
+        chatEl.scrollTop = chatEl.scrollHeight;
+      });
+    }
+
+    // --- Networking ---
+    async function sendMessage(text) {
+      if (!API_URL || API_URL.startsWith("REPLACE_")) {
+        showError("API URL is not configured. Edit index.html and set API_URL to your API Gateway invoke URL.");
+        return;
+      }
+
+      messages.push({ role: "user", content: text });
+      renderMessage(messages[messages.length - 1]);
+      scrollToBottom();
+
+      sending = true;
+      updateSendState();
+      showTyping();
+
+      const started = performance.now();
+      try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 240000);
+        const requestHeaders = { "Content-Type": "application/json" };
+        if (APP_TOKEN) requestHeaders["x-app-token"] = APP_TOKEN;
+        const resp = await fetch(API_URL, {
+          method: "POST",
+          headers: requestHeaders,
+          body: JSON.stringify({ user_id: userId, message: text }),
+          signal: controller.signal,
+        });
+        clearTimeout(timeout);
+
+        if (!resp.ok) {
+          const text = await resp.text().catch(() => "");
+          throw new Error(`Server returned ${resp.status}. ${text.slice(0, 200)}`);
+        }
+
+        const data = await resp.json();
+        hideTyping();
+
+        const reply = (data && data.reply) || "(empty reply)";
+        messages.push({ role: "assistant", content: reply });
+        renderMessage(messages[messages.length - 1]);
+        scrollToBottom();
+
+        const elapsed = Math.round(performance.now() - started);
+        console.log("[mealplanner]", { request_id: data.request_id, elapsed_ms: elapsed });
+      } catch (err) {
+        hideTyping();
+        if (err.name === "AbortError") {
+          showError("That took longer than 55 seconds. The agent may have gotten stuck — try a simpler request.");
+        } else {
+          showError(err.message || "Something went wrong.");
+        }
+        console.error("[mealplanner] error", err);
+      } finally {
+        sending = false;
+        updateSendState();
+      }
+    }
+
+    // --- Input handling ---
+    function autoResize() {
+      inputEl.style.height = "auto";
+      inputEl.style.height = Math.min(inputEl.scrollHeight, 180) + "px";
+    }
+
+    function updateSendState() {
+      const hasText = inputEl.value.trim().length > 0;
+      sendEl.disabled = !hasText || sending;
+    }
+
+    function submit() {
+      const text = inputEl.value.trim();
+      if (!text || sending) return;
+      inputEl.value = "";
+      autoResize();
+      updateSendState();
+      sendMessage(text);
+    }
+
+    inputEl.addEventListener("input", () => { autoResize(); updateSendState(); });
+    inputEl.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submit(); }
+    });
+    sendEl.addEventListener("click", submit);
+
+    // --- Init ---
+    renderAll();
+    inputEl.focus();
+  </script>
+</body>
+</html>
