@@ -25,20 +25,6 @@
 
 &nbsp;
 
-### 💻  Email sentiment analysis tool  💻
-
-- In this project, I built a BERT-powered sentiment analysis tool designed for individuals with cognitive disabilities
-
-  - The **templates** folder contains the HTML code for the home and results pages of the app
-
-  - `app.py` contains the Python code for the flask app
-
-  - The **demo** folder contains a demo video and screenshots of the app
-
-  - Our team's poster presentation is also included
-
-&nbsp;
-
 ### 🚫  From-scratch Naive Bayes spam detection web app and Chrome extension  🚫
 
 - In this project, I built a spam detection system using a Naive Bayes model implemented from scratch using only Python's math libraries (no ML libraries) deployed as both a Flask web app and a Chrome browser extension
@@ -50,6 +36,20 @@
   - `requirements.txt` lists all Python dependencies needed to run either component
 
   - The **README.md** includes setup and installation instructions for both the web app and Chrome extension
+
+&nbsp;
+
+### 💻  Email sentiment analysis tool  💻
+
+- In this project, I built a BERT-powered sentiment analysis tool designed for individuals with cognitive disabilities
+
+  - The **templates** folder contains the HTML code for the home and results pages of the app
+
+  - `app.py` contains the Python code for the flask app
+
+  - The **demo** folder contains a demo video and screenshots of the app
+
+  - Our team's poster presentation is also included
 
 &nbsp;
 
