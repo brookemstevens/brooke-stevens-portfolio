@@ -1163,7 +1163,7 @@
       const started = performance.now();
       try {
         const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 240000);
+        const timeout = setTimeout(() => controller.abort(), 840000);
         const requestHeaders = { "Content-Type": "application/json" };
         if (APP_TOKEN) requestHeaders["x-app-token"] = APP_TOKEN;
         const resp = await fetch(API_URL, {
@@ -1192,7 +1192,7 @@
       } catch (err) {
         hideTyping();
         if (err.name === "AbortError") {
-          showError("That took longer than 55 seconds. The agent may have gotten stuck — try a simpler request.");
+          showError("That took longer than 14 minutes. The agent may have gotten stuck — try a simpler request.");
         } else {
           showError(err.message || "Something went wrong.");
         }
