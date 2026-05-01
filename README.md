@@ -25,6 +25,16 @@
 
 &nbsp;
 
+### 🚕  NYC taxi demand prediction with distributed Spark  🚕
+
+- In this project, my team built a distributed Spark pipeline on Google Cloud Dataproc to predict hourly taxi pickup demand from 12.75 million NYC Yellow Taxi trips (1.99 GB)
+
+  - The **Completed_NYC_Taxi_Spark.ipynb** notebook contains the full PySpark pipeline: data cleaning, feature engineering, and three Spark MLlib regression models (Linear Regression, Decision Tree, Random Forest)
+
+  - The **NYC_Taxi_Prediction.pdf** file contains our presentation, which covers the problem, dataset, approach, model comparison, and limitations
+
+&nbsp;
+
 ### 🚫  From-scratch Naive Bayes spam detection web app and Chrome extension  🚫
 
 - In this project, I built a spam detection system using a Naive Bayes model implemented from scratch using only Python's math libraries (no ML libraries) deployed as both a Flask web app and a Chrome browser extension
