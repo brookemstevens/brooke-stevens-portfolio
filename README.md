@@ -37,7 +37,7 @@
 
 ### 🚫  From-scratch Naive Bayes spam detection web app and Chrome extension  🚫
 
-- In this project, I built a spam detection system using a Naive Bayes model implemented from scratch using only Python's math libraries (no ML libraries) deployed as both a Flask web app and a Chrome browser extension
+- In this project, I built an email spam detection system using a Naive Bayes model implemented from scratch using only Python's math libraries (no ML libraries) deployed as both a Flask web app and a Chrome browser extension
 
   - The **spam_app** folder contains the Flask web application
 
