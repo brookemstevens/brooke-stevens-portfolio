@@ -173,9 +173,46 @@ def load_history(user_id: str, limit: int = 20) -> list[dict]:
 
 
 def save_history(user_id: str, messages: list[dict], cap: int = 30) -> None:
-    # Cap history length so the DynamoDB item stays small and the model context
-    # stays bounded. The tail preserves the most recent turns.
-    trimmed = messages[-cap:]
+    """Save chat history, capped to roughly the last `cap` messages.
+
+    The trim is "tool-aware": if the cut point would land in the middle of a
+    tool_use → tool_result pair, we extend the cut backward to keep the
+    matching tool_use with its tool_result. Bedrock rejects any history
+    containing a toolUse without its matching toolResult, so blindly slicing
+    the tail can permanently corrupt subsequent requests.
+    """
+    if len(messages) <= cap:
+        trimmed = messages
+    else:
+        # Default cut point: keep the last `cap` messages.
+        cut = len(messages) - cap
+        # Collect tool IDs *kept* by the default cut.
+        kept_tool_use_ids = set()
+        kept_tool_result_ids = set()
+        for msg in messages[cut:]:
+            for block in msg.get("content", []) or []:
+                if "toolUse" in block:
+                    tu = block["toolUse"].get("toolUseId")
+                    if tu:
+                        kept_tool_use_ids.add(tu)
+                elif "toolResult" in block:
+                    tr = block["toolResult"].get("toolUseId")
+                    if tr:
+                        kept_tool_result_ids.add(tr)
+        # If any tool_result in the kept window has no matching tool_use,
+        # walk the cut point backward until each orphan finds its match.
+        orphan_results = kept_tool_result_ids - kept_tool_use_ids
+        while orphan_results and cut > 0:
+            cut -= 1
+            msg = messages[cut]
+            for block in msg.get("content", []) or []:
+                if "toolUse" in block:
+                    tu = block["toolUse"].get("toolUseId")
+                    if tu in orphan_results:
+                        orphan_results.discard(tu)
+                        kept_tool_use_ids.add(tu)
+        trimmed = messages[cut:]
+
     _table.put_item(
         Item={
             "pk": _pk(user_id),
@@ -270,4 +307,3 @@ def save_cached_recipe(recipe_id: str, recipe: dict) -> None:
             "cached_at": _now(),
         }
     )
-
