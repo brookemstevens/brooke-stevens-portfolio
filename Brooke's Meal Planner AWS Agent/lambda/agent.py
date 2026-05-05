@@ -38,9 +38,10 @@ def run_agent(
 
     Returns (final_text, updated_history).
     """
-    # Defensive: if history ends with a dangling tool_use (from a prior
-    # version that didn't sanitize on save), drop it so Bedrock doesn't
-    # reject the whole conversation.
+    # Defensive: if history contains any orphan tool_use or tool_result
+    # blocks (from a prior version that didn't sanitize on save, or from a
+    # trim cap that sliced through a round-trip), drop them so Bedrock
+    # doesn't reject the whole conversation.
     history = _strip_dangling_tool_use(list(history))
     messages = history + [
         {"role": "user", "content": [{"text": user_message}]}
@@ -141,22 +142,67 @@ def run_agent(
 
 
 def _strip_dangling_tool_use(messages: list[dict]) -> list[dict]:
-    """Remove a trailing assistant message whose tool_use blocks have no
-    matching tool_results in the next message.
+    """Remove ANY assistant tool_use block whose toolUseId doesn't appear
+    in a following tool_result, plus any tool_result whose toolUseId doesn't
+    have a preceding tool_use.
 
     Bedrock's Converse API rejects any conversation containing a toolUse
-    without a corresponding toolResult. This can happen when the agent loop
-    terminates (e.g. MAX_TURNS hit) right after the model requested a tool
-    call but before we executed it. Saving that state would permanently
-    corrupt the conversation — the next request would immediately
-    ValidationException on load.
+    without a corresponding toolResult (and vice versa). Corruption can land
+    in stored history three ways:
+
+      1. MAX_TURNS hit mid-loop — the trailing assistant message has an
+         orphan tool_use (handled by the original tail-only check).
+      2. save_history's trim cap slices through a tool round-trip, leaving
+         the head of history with an orphan tool_use because the matching
+         tool_result got cut. This is what was actually breaking requests
+         in production — the original sanitizer only checked the tail and
+         missed this case.
+      3. Mid-conversation gap — shouldn't happen, but defending against it
+         costs nothing and catches future bugs.
+
+    Strategy: collect all tool_use IDs and all tool_result IDs across the
+    entire conversation. For each message, drop any block whose ID isn't
+    matched on the other side. Drop messages that become empty.
     """
     if not messages:
         return messages
-    last = messages[-1]
-    if last.get("role") != "assistant":
+
+    # First pass: collect all matched IDs.
+    tool_use_ids = set()
+    tool_result_ids = set()
+    for msg in messages:
+        for block in msg.get("content", []) or []:
+            if "toolUse" in block:
+                tu_id = block["toolUse"].get("toolUseId")
+                if tu_id:
+                    tool_use_ids.add(tu_id)
+            elif "toolResult" in block:
+                tr_id = block["toolResult"].get("toolUseId")
+                if tr_id:
+                    tool_result_ids.add(tr_id)
+
+    matched_ids = tool_use_ids & tool_result_ids
+    has_orphans = (tool_use_ids | tool_result_ids) != matched_ids
+    if not has_orphans:
         return messages
-    has_tool_use = any("toolUse" in block for block in last.get("content", []))
-    if has_tool_use:
-        return messages[:-1]
-    return messages
+
+    # Second pass: filter out orphan blocks. Drop messages that become empty.
+    cleaned = []
+    for msg in messages:
+        kept_blocks = []
+        for block in msg.get("content", []) or []:
+            if "toolUse" in block:
+                tu_id = block["toolUse"].get("toolUseId")
+                if tu_id in matched_ids:
+                    kept_blocks.append(block)
+            elif "toolResult" in block:
+                tr_id = block["toolResult"].get("toolUseId")
+                if tr_id in matched_ids:
+                    kept_blocks.append(block)
+            else:
+                # text and other block types pass through untouched
+                kept_blocks.append(block)
+        if kept_blocks:
+            cleaned.append({**msg, "content": kept_blocks})
+
+    return cleaned
