@@ -10,8 +10,6 @@
   - The **pseudocode-extractor.skill** file contains the skill for converting research papers into clean, formal pseudocode in the style of Phuong & Hutter (2022)
 
   - The **README.md** documents the motivation, skill overviews, usage instructions, and demos
-  
-  - The **Brooke_Meal_Planner_Full_Conversation.pdf** file shows the deployed website interface and a full example conversation demonstrating how the meal-planning agent is used.
 
 &nbsp;
 
@@ -24,6 +22,8 @@
   - `index.html` contains the static frontend chat UI, including a structured shopping-list renderer
 
   - The **README.md** documents the architecture, setup steps, environment variables, and instructions for adding cookbook recipes
+
+  - The **Brooke_Meal_Planner_Full_Conversation.pdf** file shows the deployed website interface and a full example conversation demonstrating how the meal-planning agent is used.
 
 &nbsp;
 
