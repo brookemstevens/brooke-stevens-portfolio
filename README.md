@@ -23,7 +23,7 @@
 
   - The **README.md** documents the architecture, setup steps, environment variables, and instructions for adding cookbook recipes
 
-  - The **Brooke_Meal_Planner_Full_Conversation.pdf** file shows the deployed website interface and a full example conversation demonstrating how the meal-planning agent is used.
+  - The **Brooke_Meal_Planner_Full_Conversation.pdf** file shows the deployed website interface and a full example conversation demonstrating how the meal-planning agent is used
 
 &nbsp;
 
